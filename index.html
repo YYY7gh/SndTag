@@ -71,7 +71,7 @@
             50% { opacity: 0.8; transform: translateY(-60px) scale(1.1) rotate(10deg); }
             100% { opacity: 0; transform: translateY(-120px) scale(0.7) rotate(20deg); }
         }
-               #upgradeButton {
+        #upgradeButton {
             position: absolute;
             bottom: 60px;
             left: 50%;
@@ -103,7 +103,7 @@
         
         #upgradeButton:active {
             filter: brightness(85%);
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); /* Reduced shadow instead of movement */
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
         }
         
         #upgradeButton:disabled {
@@ -263,33 +263,11 @@
     <button id="upgradeButton">Upgrade (10 coins)</button>
     <button id="skinPanelToggle">Скины</button>
     <div id="skinPanel">
-        <div class="skin-option" data-skin="Skins/SvetlanaSkin.jpg" data-cost="0">
-            <img src="Skins/SvetlanaSkin.jpg" alt="Skin 1">
-            <span>🔢Svetlana (Free)</span>
-        </div>
-        <div class="skin-option" data-skin="Skins/LeshaSkin.jpg" data-cost="1">
-            <img src="Skins/LeshaSkin.jpg" alt="Skin 2">
-            <span>😍Lesha (1)</span>
-        </div>
-        <div class="skin-option" data-skin="Skins/RomanSkin.jpg" data-cost="10000">
-            <img src="Skins/RomanSkin.jpg" alt="Skin 3">
-            <span>👨‍❤️‍👨Roman (10000)</span>
-        </div>
-        <div class="skin-option" data-skin="Skins/ElenaSkin.jpg" data-cost="30000">
-            <img src="Skins/ElenaSkin.jpg" alt="Skin 4">
-            <span>🦛Elena (30000)</span>
-        </div>
-        <div class="skin-option" data-skin="Skins/KirillSkin.jpg" data-cost="50000">
-            <img src="Skins/KirillSkin.jpg" alt="Skin 5">
-            <span>🪨Kirill (50000)</span>
-        </div>
-        <div class="skin-option" data-skin="Skins/MatveiSkin.jpg" data-cost="75000">
-            <img src="Skins/MatveiSkin.jpg" alt="Skin 6">
-            <span>🍖Matvei (75000)</span>
-        </div>
-        <div class="skin-option" data-skin="Skins/FilipinkoSkin.jpg" data-cost="100000">
-            <img src="Skins/FilipinkoSkin.jpg" alt="Skin 7">
-            <span>🎨Fillipinko (100000)</span>
+        <div id="skinPages"></div>
+        <div id="paginationControls" style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+            <button id="prevPage" style="padding: 5px 10px; background: rgba(255, 255, 255, 0.1); border: none; border-radius: 5px; color: #fff; cursor: pointer;">Previous</button>
+            <span id="pageIndicator" style="font-size: 16px; align-self: center;"></span>
+            <button id="nextPage" style="padding: 5px 10px; background: rgba(255, 255, 255, 0.1); border: none; border-radius: 5px; color: #fff; cursor: pointer;">Next</button>
         </div>
     </div>
     <div id="adminPanel">
@@ -300,25 +278,39 @@
         <input type="number" id="adminUpgrades" placeholder="Set Coins Per Click">
         <button id="setUpgrades">Set Upgrades</button>
     </div>
-    <audio id="funSound" src="ston.mp3" loop></audio>
+    <audio id="clickSound" loop></audio>
 
     <script>
         window.onload = function() {
             const mainButton = document.getElementById('mainButton');
             const upgradeButton = document.getElementById('upgradeButton');
-            const sound = document.getElementById('funSound');
+            const clickSound = document.getElementById('clickSound');
             const coinCount = document.getElementById('coinCount');
             const coinIcon = document.getElementById('coinIcon');
             const clickArea = document.getElementById('clickArea');
             const skinPanelToggle = document.getElementById('skinPanelToggle');
             const skinPanel = document.getElementById('skinPanel');
-            const skinOptions = document.querySelectorAll('.skin-option');
+            const skinPages = document.getElementById('skinPages');
+            const prevPage = document.getElementById('prevPage');
+            const nextPage = document.getElementById('nextPage');
+            const pageIndicator = document.getElementById('pageIndicator');
             const adminPanel = document.getElementById('adminPanel');
             const setCoinsButton = document.getElementById('setCoins');
             const setUpgradesButton = document.getElementById('setUpgrades');
             const adminCoinsInput = document.getElementById('adminCoins');
             const adminUpgradesInput = document.getElementById('adminUpgrades');
             const adminCloseButton = document.getElementById('adminCloseButton');
+
+            // Skin data with custom sounds
+            const skins = [
+                { skin: "Skins/SvetlanaSkin.jpg", cost: 0, name: "🔢Svetlana (Free)", sound: "Sounds/SvetlanaSkin.mp3" },
+                { skin: "Skins/LeshaSkin.jpg", cost: 1, name: "😍Lesha (1)", sound: "Sounds/LeshaSkin.mp3" },
+                { skin: "Skins/RomanSkin.jpg", cost: 10000, name: "👨‍❤️‍👨Roman (10000)", sound: "Sounds/RomanSkin.mp3" },
+                { skin: "Skins/ElenaSkin.jpg", cost: 30000, name: "🦛Elena (30000)", sound: "Sounds/ElenaSkin.mp3" },
+                { skin: "Skins/KirillSkin.jpg", cost: 50000, name: "🪨Kirill (50000)", sound: "Sounds/KirillSkin.mp3" },
+                { skin: "Skins/MatveiSkin.jpg", cost: 75000, name: "🍖Matvei (75000)", sound: "Sounds/MatveiSkin.mp3" },
+                { skin: "Skins/FilipinkoSkin.jpg", cost: 100000, name: "🎨Fillipinko (100000)", sound: "Sounds/FilipinkoSkin.mp3" }
+            ];
 
             // Load saved values from localStorage
             let count = parseInt(localStorage.getItem('coinCount')) || 0;
@@ -327,27 +319,26 @@
             let upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
             let currentSkin = localStorage.getItem('currentSkin') || 'Skins/SvetlanaSkin.jpg';
             let unlockedSkins = JSON.parse(localStorage.getItem('unlockedSkins')) || ['Skins/SvetlanaSkin.jpg'];
+            
+            // Pagination variables
+            const skinsPerPage = 7;
+            let currentPage = 0;
+            const totalPages = Math.ceil(skins.length / skinsPerPage);
 
-            // Apply initial skin
+            // Apply initial skin and sound
             mainButton.style.backgroundImage = `url('${currentSkin}')`;
             upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
             coinIcon.src = currentSkin;
+            const initialSkinData = skins.find(s => s.skin === currentSkin);
+            clickSound.src = initialSkinData ? initialSkinData.sound : "ston.mp3";
 
             // Initialize display
             coinCount.textContent = count;
             upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
             upgradeButton.disabled = count < upgradeCost;
 
-            // Update skin options
-            skinOptions.forEach(option => {
-                const skin = option.getAttribute('data-skin');
-                if (!unlockedSkins.includes(skin)) {
-                    option.classList.add('locked');
-                }
-            });
-
             // Long press detection for admin panel (10 seconds)
-            const holdDuration = 10000; // 10 seconds in milliseconds
+            const holdDuration = 10000;
             let holdTimeout = null;
 
             // Mouse events for desktop
@@ -392,7 +383,7 @@
                     coinCount.textContent = count;
                     localStorage.setItem('coinCount', count);
                     upgradeButton.disabled = count < upgradeCost;
-                    updateSkinOptions();
+                    renderSkinPage();
                 }
             });
 
@@ -415,8 +406,8 @@
 
             // Main button click (mouse)
             mainButton.addEventListener('click', function(e) {
-                sound.volume = 1.0;
-                sound.play().catch((e) => console.error('Ошибка воспроизведения звука:', e));
+                clickSound.volume = 1.0;
+                clickSound.play().catch((e) => console.error('Ошибка воспроизведения звука:', e));
 
                 count += coinsPerClick;
                 coinCount.textContent = count;
@@ -432,14 +423,14 @@
                 setTimeout(() => coin.remove(), 1200);
 
                 upgradeButton.disabled = count < upgradeCost;
-                updateSkinOptions();
+                renderSkinPage();
             });
 
             // Main button touch support
             mainButton.addEventListener('touchstart', function(e) {
                 e.preventDefault();
-                sound.volume = 1.0;
-                sound.play().catch((e) => console.error('Ошибка воспроизведения звука:', e));
+                clickSound.volume = 1.0;
+                clickSound.play().catch((e) => console.error('Ошибка воспроизведения звука:', e));
 
                 count += coinsPerClick;
                 coinCount.textContent = count;
@@ -456,7 +447,7 @@
                 setTimeout(() => coin.remove(), 1200);
 
                 upgradeButton.disabled = count < upgradeCost;
-                updateSkinOptions();
+                renderSkinPage();
             });
 
             // Upgrade button
@@ -473,44 +464,93 @@
                     localStorage.setItem('coinCount', count);
                     localStorage.setItem('coinsPerClick', coinsPerClick);
                     localStorage.setItem('upgradeLevel', upgradeLevel);
-                    updateSkinOptions();
+                    renderSkinPage();
                 }
             });
 
             // Skin panel toggle
             skinPanelToggle.addEventListener('click', function() {
                 skinPanel.style.display = skinPanel.style.display === 'block' ? 'none' : 'block';
+                if (skinPanel.style.display === 'block') {
+                    renderSkinPage();
+                }
             });
 
-            // Skin selection
-            skinOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const skin = this.getAttribute('data-skin');
-                    const cost = parseInt(this.getAttribute('data-cost'));
+            // Pagination controls
+            prevPage.addEventListener('click', function() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    renderSkinPage();
+                }
+            });
 
-                    if (unlockedSkins.includes(skin)) {
-                        currentSkin = skin;
-                        mainButton.style.backgroundImage = `url('${currentSkin}')`;
-                        upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
-                        coinIcon.src = currentSkin;
-                        localStorage.setItem('currentSkin', currentSkin);
-                        skinPanel.style.display = 'none';
-                    } else if (count >= cost) {
-                        count -= cost;
-                        unlockedSkins.push(skin);
-                        currentSkin = skin;
-                        mainButton.style.backgroundImage = `url('${currentSkin}')`;
-                        upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
-                        coinIcon.src = currentSkin;
-                        coinCount.textContent = count;
-                        localStorage.setItem('coinCount', count);
-                        localStorage.setItem('unlockedSkins', JSON.stringify(unlockedSkins));
-                        localStorage.setItem('currentSkin', currentSkin);
-                        this.classList.remove('locked');
-                        skinPanel.style.display = 'none';
+            nextPage.addEventListener('click', function() {
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    renderSkinPage();
+                }
+            });
+
+            // Render skin page
+            function renderSkinPage() {
+                skinPages.innerHTML = '';
+                const startIndex = currentPage * skinsPerPage;
+                const endIndex = Math.min(startIndex + skinsPerPage, skins.length);
+                const currentSkins = skins.slice(startIndex, endIndex);
+
+                currentSkins.forEach(skinData => {
+                    const option = document.createElement('div');
+                    option.className = 'skin-option';
+                    option.setAttribute('data-skin', skinData.skin);
+                    option.setAttribute('data-cost', skinData.cost);
+                    
+                    option.innerHTML = `
+                        <img src="${skinData.skin}" alt="Skin">
+                        <span>${skinData.name}</span>
+                    `;
+
+                    if (!unlockedSkins.includes(skinData.skin) && count < skinData.cost) {
+                        option.classList.add('locked');
                     }
+
+                    option.addEventListener('click', function() {
+                        const skin = this.getAttribute('data-skin');
+                        const cost = parseInt(this.getAttribute('data-cost'));
+                        const selectedSkinData = skins.find(s => s.skin === skin);
+
+                        if (unlockedSkins.includes(skin)) {
+                            currentSkin = skin;
+                            mainButton.style.backgroundImage = `url('${currentSkin}')`;
+                            upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
+                            coinIcon.src = currentSkin;
+                            clickSound.src = selectedSkinData.sound;
+                            localStorage.setItem('currentSkin', currentSkin);
+                            skinPanel.style.display = 'none';
+                        } else if (count >= cost) {
+                            count -= cost;
+                            unlockedSkins.push(skin);
+                            currentSkin = skin;
+                            mainButton.style.backgroundImage = `url('${currentSkin}')`;
+                            upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
+                            coinIcon.src = currentSkin;
+                            clickSound.src = selectedSkinData.sound;
+                            coinCount.textContent = count;
+                            localStorage.setItem('coinCount', count);
+                            localStorage.setItem('unlockedSkins', JSON.stringify(unlockedSkins));
+                            localStorage.setItem('currentSkin', currentSkin);
+                            skinPanel.style.display = 'none';
+                            renderSkinPage();
+                        }
+                    });
+
+                    skinPages.appendChild(option);
                 });
-            });
+
+                // Update pagination controls
+                pageIndicator.textContent = `Page ${currentPage + 1} of ${totalPages}`;
+                prevPage.disabled = currentPage === 0;
+                nextPage.disabled = currentPage === totalPages - 1;
+            }
 
             // Close skin panel when clicking outside
             document.addEventListener('click', function(e) {
@@ -519,18 +559,8 @@
                 }
             });
 
-            // Update skin options
-            function updateSkinOptions() {
-                skinOptions.forEach(option => {
-                    const skin = option.getAttribute('data-skin');
-                    const cost = parseInt(option.getAttribute('data-cost'));
-                    if (!unlockedSkins.includes(skin) && count < cost) {
-                        option.classList.add('locked');
-                    } else {
-                        option.classList.remove('locked');
-                    }
-                });
-            }
+            // Initial render
+            renderSkinPage();
         };
     </script>
 </body>
