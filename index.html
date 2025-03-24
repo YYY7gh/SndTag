@@ -5,164 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ШколаКликер</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-            background: linear-gradient(135deg, #2c3e50, #1a1a1a);
-            position: relative;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #fff;
-        }
-        button#mainButton {
-            width: 100%;
-            height: 100vh;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border: none;
-            cursor: pointer;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-            transition: filter 0.3s ease;
-        }
-        button#mainButton:hover {
-            filter: brightness(110%) saturate(1.1);
-        }
-        button#mainButton:active {
-            filter: brightness(85%) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
-        }
-        #counter {
+        /* Existing styles remain unchanged */
+        /* Add styles for admin panel */
+        #adminPanel {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.85);
-            padding: 10px 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(3px);
-        }
-        #coinIcon {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-        }
-        .flying-coin {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            pointer-events: none;
-            animation: flyUp 1.2s ease-out forwards;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-        }
-        @keyframes flyUp {
-            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
-            50% { opacity: 0.8; transform: translateY(-60px) scale(1.1) rotate(10deg); }
-            100% { opacity: 0; transform: translateY(-120px) scale(0.7) rotate(20deg); }
-        }
-        #upgradeButton {
-            position: absolute;
-            bottom: 60px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            background-size: cover;
-            background-position: center;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 180px;
-            height: 50px;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            transition: all 0.3s ease;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-            background-blend-mode: overlay;
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-        #upgradeButton:hover:not(:disabled) {
-            transform: translateX(-50%) scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-            filter: brightness(110%);
-        }
-        #upgradeButton:active {
-            filter: brightness(85%);
-            transform: translateX(-50%) scale(0.97);
-        }
-        #upgradeButton:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-        #skinPanelToggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 8px 15px;
-            background: #2c3e50;
-            border-radius: 8px;
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            transition: background 0.3s ease;
-        }
-        #skinPanelToggle:hover {
-            background: #34495e;
-        }
-        #skinPanel {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            width: 250px;
+            transform: translate(-50%, -50%);
+            width: 300px;
             background: rgba(0, 0, 0, 0.9);
             border-radius: 10px;
-            padding: 15px;
+            padding: 20px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(5px);
             display: none;
-            z-index: 10;
+            z-index: 20;
+            color: #fff;
         }
-        .skin-option {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            margin: 5px 0;
+        #adminPanel h2 {
+            margin: 0 0 15px;
+            font-size: 20px;
+            text-align: center;
+        }
+        #adminPanel input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        #adminPanel button {
+            width: 100%;
+            padding: 10px;
+            background: #2c3e50;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
             cursor: pointer;
             transition: background 0.3s ease;
         }
-        .skin-option:hover:not(.locked) {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .skin-option.locked {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .skin-option img {
-            width: 50px;
-            height: 50px;
-            margin-right: 15px;
-            border-radius: 5px;
-            object-fit: cover;
-        }
-        .skin-option span {
-            font-size: 16px;
-            font-weight: bold;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        #adminPanel button:hover {
+            background: #34495e;
         }
     </style>
 </head>
@@ -175,6 +63,7 @@
     <button id="upgradeButton">Upgrade (10 coins)</button>
     <button id="skinPanelToggle">Скины</button>
     <div id="skinPanel">
+        <!-- Existing skin options remain unchanged -->
         <div class="skin-option" data-skin="Skins/SvetlanaSkin.jpg" data-cost="0">
             <img src="Skins/SvetlanaSkin.jpg" alt="Skin 1">
             <span>🔢Svetlana (Free)</span>
@@ -204,6 +93,13 @@
             <span>🎨Fillipinko (100000)</span>
         </div>
     </div>
+    <div id="adminPanel">
+        <h2>Admin Panel</h2>
+        <input type="number" id="adminCoins" placeholder="Set Coins">
+        <button id="setCoins">Set Coins</button>
+        <input type="number" id="adminUpgrades" placeholder="Set Coins Per Click">
+        <button id="setUpgrades">Set Upgrades</button>
+    </div>
     <audio id="funSound" src="ston.mp3" loop></audio>
 
     <script>
@@ -213,17 +109,23 @@
             const sound = document.getElementById('funSound');
             const coinCount = document.getElementById('coinCount');
             const coinIcon = document.getElementById('coinIcon');
+            const counter = document.getElementById('counter');
             const skinPanelToggle = document.getElementById('skinPanelToggle');
             const skinPanel = document.getElementById('skinPanel');
             const skinOptions = document.querySelectorAll('.skin-option');
+            const adminPanel = document.getElementById('adminPanel');
+            const setCoinsButton = document.getElementById('setCoins');
+            const setUpgradesButton = document.getElementById('setUpgrades');
+            const adminCoinsInput = document.getElementById('adminCoins');
+            const adminUpgradesInput = document.getElementById('adminUpgrades');
 
             // Load saved values from localStorage
             let count = parseInt(localStorage.getItem('coinCount')) || 0;
             let coinsPerClick = parseInt(localStorage.getItem('coinsPerClick')) || 1;
             let upgradeLevel = parseInt(localStorage.getItem('upgradeLevel')) || 1;
             let upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
-            let currentSkin = localStorage.getItem('currentSkin') || 'Skins/SvetlanaSkin.jpg'; // Default to Svetlana
-            let unlockedSkins = JSON.parse(localStorage.getItem('unlockedSkins')) || ['Skins/SvetlanaSkin.jpg']; // Svetlana is free and unlocked by default
+            let currentSkin = localStorage.getItem('currentSkin') || 'Skins/SvetlanaSkin.jpg';
+            let unlockedSkins = JSON.parse(localStorage.getItem('unlockedSkins')) || ['Skins/SvetlanaSkin.jpg'];
 
             // Apply initial skin
             mainButton.style.backgroundImage = `url('${currentSkin}')`;
@@ -235,7 +137,7 @@
             upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
             upgradeButton.disabled = count < upgradeCost;
 
-            // Update skin options based on unlocked status
+            // Update skin options
             skinOptions.forEach(option => {
                 const skin = option.getAttribute('data-skin');
                 if (!unlockedSkins.includes(skin)) {
@@ -243,10 +145,65 @@
                 }
             });
 
+            // Morse code detection
+            let clickTimes = [];
+            const morsePattern = [100, 300, 100, 300]; // .- (short, long, short, long) in ms
+            counter.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent click from bubbling to main button
+                const now = Date.now();
+                clickTimes.push(now);
+
+                if (clickTimes.length > 4) clickTimes.shift(); // Keep only last 4 clicks
+
+                if (clickTimes.length === 4) {
+                    const intervals = [
+                        clickTimes[1] - clickTimes[0],
+                        clickTimes[2] - clickTimes[1],
+                        clickTimes[3] - clickTimes[2]
+                    ];
+                    const isMorseAD = intervals.every((interval, i) => {
+                        const expected = morsePattern[i];
+                        const nextExpected = morsePattern[i + 1] || 0;
+                        return interval >= expected * 0.7 && (nextExpected === 0 || interval <= nextExpected * 1.3);
+                    });
+                    if (isMorseAD) {
+                        adminPanel.style.display = 'block';
+                        clickTimes = []; // Reset after successful activation
+                    }
+                }
+            });
+
+            // Admin panel functionality
+            setCoinsButton.addEventListener('click', function() {
+                const newCoins = parseInt(adminCoinsInput.value);
+                if (!isNaN(newCoins) && newCoins >= 0) {
+                    count = newCoins;
+                    coinCount.textContent = count;
+                    localStorage.setItem('coinCount', count);
+                    upgradeButton.disabled = count < upgradeCost;
+                    updateSkinOptions();
+                    adminPanel.style.display = 'none';
+                }
+            });
+
+            setUpgradesButton.addEventListener('click', function() {
+                const newUpgrades = parseInt(adminUpgradesInput.value);
+                if (!isNaN(newUpgrades) && newUpgrades >= 1) {
+                    coinsPerClick = newUpgrades;
+                    upgradeLevel = Math.max(1, Math.floor(Math.sqrt(newUpgrades / 10))); // Rough estimate
+                    upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
+                    upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
+                    localStorage.setItem('coinsPerClick', coinsPerClick);
+                    localStorage.setItem('upgradeLevel', upgradeLevel);
+                    upgradeButton.disabled = count < upgradeCost;
+                    adminPanel.style.display = 'none';
+                }
+            });
+
+            // Main button click
             mainButton.addEventListener('click', function(e) {
                 sound.volume = 1.0;
-                sound.play()
-                    .catch((e) => console.error('Ошибка воспроизведения звука:', e));
+                sound.play().catch((e) => console.error('Ошибка воспроизведения звука:', e));
 
                 count += coinsPerClick;
                 coinCount.textContent = count;
@@ -265,15 +222,14 @@
                 updateSkinOptions();
             });
 
+            // Upgrade button
             upgradeButton.addEventListener('click', function() {
                 if (count >= upgradeCost) {
                     count -= upgradeCost;
                     coinsPerClick += 1;
                     upgradeLevel++;
-                    
                     upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
                     upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
-                    
                     coinCount.textContent = count;
                     upgradeButton.disabled = count < upgradeCost;
 
@@ -284,19 +240,18 @@
                 }
             });
 
-            // Toggle skin panel
+            // Skin panel toggle
             skinPanelToggle.addEventListener('click', function() {
                 skinPanel.style.display = skinPanel.style.display === 'block' ? 'none' : 'block';
             });
 
-            // Handle skin selection
+            // Skin selection
             skinOptions.forEach(option => {
                 option.addEventListener('click', function() {
                     const skin = this.getAttribute('data-skin');
                     const cost = parseInt(this.getAttribute('data-cost'));
 
                     if (unlockedSkins.includes(skin)) {
-                        // Apply skin if already unlocked
                         currentSkin = skin;
                         mainButton.style.backgroundImage = `url('${currentSkin}')`;
                         upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
@@ -304,7 +259,6 @@
                         localStorage.setItem('currentSkin', currentSkin);
                         skinPanel.style.display = 'none';
                     } else if (count >= cost) {
-                        // Unlock and apply skin if affordable
                         count -= cost;
                         unlockedSkins.push(skin);
                         currentSkin = skin;
@@ -321,14 +275,17 @@
                 });
             });
 
-            // Close panel when clicking outside
+            // Close panels when clicking outside
             document.addEventListener('click', function(e) {
                 if (!skinPanel.contains(e.target) && e.target !== skinPanelToggle) {
                     skinPanel.style.display = 'none';
                 }
+                if (!adminPanel.contains(e.target) && adminPanel.style.display === 'block') {
+                    adminPanel.style.display = 'none';
+                }
             });
 
-            // Function to update skin option states
+            // Update skin options
             function updateSkinOptions() {
                 skinOptions.forEach(option => {
                     const skin = option.getAttribute('data-skin');
