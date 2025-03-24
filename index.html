@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Sndtag</title>
+</head>
+<body>
+
+    <audio id="welcomeSound">
+        <source src="https://github.com/YYY7gh/SndTag/raw/refs/heads/main/ston.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент.
+    </audio>
+
+    <script>
+        window.onload = function() {
+            var sound = document.getElementById("welcomeSound");
+            sound.play().catch(function(error) {
+                console.log("Ошибка воспроизведения: ", error);
+            });
+        }
+    </script>
+</body>
+</html>
