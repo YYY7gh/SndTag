@@ -50,6 +50,7 @@
             backdrop-filter: blur(3px);
             cursor: pointer;
             touch-action: none;
+            z-index: 100; /* Ensure it’s on top */
         }
         #coinIcon {
             width: 30px;
@@ -263,7 +264,12 @@
     <audio id="funSound" src="ston.mp3" loop></audio>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Log to confirm script is running
+        console.log('Script loaded at', Date.now());
+
+        window.onload = function() {
+            console.log('Window fully loaded at', Date.now());
+
             const mainButton = document.getElementById('mainButton');
             const upgradeButton = document.getElementById('upgradeButton');
             const sound = document.getElementById('funSound');
@@ -278,6 +284,10 @@
             const setUpgradesButton = document.getElementById('setUpgrades');
             const adminCoinsInput = document.getElementById('adminCoins');
             const adminUpgradesInput = document.getElementById('adminUpgrades');
+
+            // Verify elements exist
+            if (!clickArea) console.error('clickArea element not found');
+            else console.log('clickArea element found');
 
             // Load saved values from localStorage
             let count = parseInt(localStorage.getItem('coinCount')) || 0;
@@ -312,42 +322,42 @@
             // Mouse events for desktop
             clickArea.addEventListener('mousedown', function(e) {
                 e.preventDefault();
-                console.log('Hold started (mouse)', Date.now());
+                console.log('Mouse down on clickArea at', Date.now());
                 holdTimeout = setTimeout(() => {
-                    console.log('Admin panel triggered (mouse)');
+                    console.log('Admin panel triggered (mouse) at', Date.now());
                     adminPanel.style.display = 'block';
                 }, holdDuration);
             });
 
             clickArea.addEventListener('mouseup', function(e) {
                 e.preventDefault();
-                console.log('Hold ended (mouse)', Date.now());
+                console.log('Mouse up on clickArea at', Date.now());
                 clearTimeout(holdTimeout);
             });
 
             clickArea.addEventListener('mouseleave', function() {
-                console.log('Mouse left click area');
+                console.log('Mouse left clickArea at', Date.now());
                 clearTimeout(holdTimeout);
             });
 
             // Touch events for mobile
             clickArea.addEventListener('touchstart', function(e) {
                 e.preventDefault();
-                console.log('Hold started (touch)', Date.now());
+                console.log('Touch start on clickArea at', Date.now());
                 holdTimeout = setTimeout(() => {
-                    console.log('Admin panel triggered (touch)');
+                    console.log('Admin panel triggered (touch) at', Date.now());
                     adminPanel.style.display = 'block';
                 }, holdDuration);
             });
 
             clickArea.addEventListener('touchend', function(e) {
                 e.preventDefault();
-                console.log('Hold ended (touch)', Date.now());
+                console.log('Touch end on clickArea at', Date.now());
                 clearTimeout(holdTimeout);
             });
 
-            clickArea.addEventListener('touchcancel', function(e) {
-                console.log('Touch cancelled');
+            clickArea.addEventListener('touchcancel', function() {
+                console.log('Touch cancelled on clickArea at', Date.now());
                 clearTimeout(holdTimeout);
             });
 
@@ -499,7 +509,7 @@
                     }
                 });
             }
-        });
+        };
     </script>
 </body>
 </html>
