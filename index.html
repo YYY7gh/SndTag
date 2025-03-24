@@ -145,8 +145,12 @@
             cursor: pointer;
             transition: background 0.3s ease;
         }
-        .skin-option:hover {
+        .skin-option:hover:not(.locked) {
             background: rgba(255, 255, 255, 0.2);
+        }
+        .skin-option.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         .skin-option img {
             width: 50px;
@@ -171,13 +175,13 @@
     <button id="upgradeButton">Upgrade (10 coins)</button>
     <button id="skinPanelToggle">Скины</button>
     <div id="skinPanel">
-        <div class="skin-option" data-skin="Skins/Skin1.jpg">
+        <div class="skin-option" data-skin="Skins/Skin1.jpg" data-cost="0">
             <img src="Skins/Skin1.jpg" alt="Skin 1">
-            <span>Skin 1</span>
+            <span>Skin 1 (Free)</span>
         </div>
-        <div class="skin-option" data-skin="Skins/Skin2.jpg">
+        <div class="skin-option" data-skin="Skins/Skin2.jpg" data-cost="10000">
             <img src="Skins/Skin2.jpg" alt="Skin 2">
-            <span>Skin 2</span>
+            <span>Skin 2 (10000)</span>
         </div>
     </div>
     <audio id="funSound" src="ston.mp3" loop></audio>
@@ -199,6 +203,7 @@
             let upgradeLevel = parseInt(localStorage.getItem('upgradeLevel')) || 1;
             let upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
             let currentSkin = localStorage.getItem('currentSkin') || 'Skins/Skin1.jpg';
+            let unlockedSkins = JSON.parse(localStorage.getItem('unlockedSkins')) || ['Skins/Skin1.jpg']; // Skin 1 is free by default
 
             // Apply initial skin
             mainButton.style.backgroundImage = `url('${currentSkin}')`;
@@ -209,6 +214,14 @@
             coinCount.textContent = count;
             upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
             upgradeButton.disabled = count < upgradeCost;
+
+            // Update skin options based on unlocked status
+            skinOptions.forEach(option => {
+                const skin = option.getAttribute('data-skin');
+                if (!unlockedSkins.includes(skin)) {
+                    option.classList.add('locked');
+                }
+            });
 
             mainButton.addEventListener('click', function(e) {
                 sound.volume = 1.0;
@@ -229,6 +242,7 @@
                 setTimeout(() => coin.remove(), 1200);
 
                 upgradeButton.disabled = count < upgradeCost;
+                updateSkinOptions();
             });
 
             upgradeButton.addEventListener('click', function() {
@@ -246,6 +260,7 @@
                     localStorage.setItem('coinCount', count);
                     localStorage.setItem('coinsPerClick', coinsPerClick);
                     localStorage.setItem('upgradeLevel', upgradeLevel);
+                    updateSkinOptions();
                 }
             });
 
@@ -257,12 +272,32 @@
             // Handle skin selection
             skinOptions.forEach(option => {
                 option.addEventListener('click', function() {
-                    currentSkin = this.getAttribute('data-skin');
-                    mainButton.style.backgroundImage = `url('${currentSkin}')`;
-                    upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
-                    coinIcon.src = currentSkin;
-                    localStorage.setItem('currentSkin', currentSkin);
-                    skinPanel.style.display = 'none'; // Close panel after selection
+                    const skin = this.getAttribute('data-skin');
+                    const cost = parseInt(this.getAttribute('data-cost'));
+
+                    if (unlockedSkins.includes(skin)) {
+                        // Apply skin if already unlocked
+                        currentSkin = skin;
+                        mainButton.style.backgroundImage = `url('${currentSkin}')`;
+                        upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
+                        coinIcon.src = currentSkin;
+                        localStorage.setItem('currentSkin', currentSkin);
+                        skinPanel.style.display = 'none';
+                    } else if (count >= cost) {
+                        // Unlock and apply skin if affordable
+                        count -= cost;
+                        unlockedSkins.push(skin);
+                        currentSkin = skin;
+                        mainButton.style.backgroundImage = `url('${currentSkin}')`;
+                        upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
+                        coinIcon.src = currentSkin;
+                        coinCount.textContent = count;
+                        localStorage.setItem('coinCount', count);
+                        localStorage.setItem('unlockedSkins', JSON.stringify(unlockedSkins));
+                        localStorage.setItem('currentSkin', currentSkin);
+                        this.classList.remove('locked');
+                        skinPanel.style.display = 'none';
+                    }
                 });
             });
 
@@ -272,6 +307,19 @@
                     skinPanel.style.display = 'none';
                 }
             });
+
+            // Function to update skin option states
+            function updateSkinOptions() {
+                skinOptions.forEach(option => {
+                    const skin = option.getAttribute('data-skin');
+                    const cost = parseInt(option.getAttribute('data-cost'));
+                    if (!unlockedSkins.includes(skin) && count < cost) {
+                        option.classList.add('locked');
+                    } else {
+                        option.classList.remove('locked');
+                    }
+                });
+            }
         });
     </script>
 </body>
