@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SndTag</title>
+    <title>SaundTag</title>
     <style>
         body {
             margin: 0;
@@ -23,7 +23,7 @@
             border: none;
             cursor: pointer;
             outline: none;
-            -webkit-tap-highlight-color: transparent; /* Fix for blue highlight */
+            -webkit-tap-highlight-color: transparent;
         }
         button#mainButton:active {
             filter: brightness(85%);
@@ -59,11 +59,11 @@
         }
         #upgradeButton {
             position: absolute;
-            bottom: 20px;
+            bottom: 80px; /* Moved up from bottom */
             left: 50%;
             transform: translateX(-50%);
             padding: 10px 20px;
-            background-image: url('BtnImg.jpg'); /* New image for upgrade button */
+            background-image: url('BtnImg.jpg'); /* Changed to BtnImg.jpg */
             background-size: cover;
             background-position: center;
             border: none;
@@ -74,7 +74,7 @@
             width: 200px;
             height: 60px;
             outline: none;
-            -webkit-tap-highlight-color: transparent; /* Fix for blue highlight */
+            -webkit-tap-highlight-color: transparent;
         }
         #upgradeButton:active {
             filter: brightness(85%);
@@ -88,7 +88,7 @@
 <body>
     <button id="mainButton"></button>
     <div id="counter">
-        <img id="coinIcon" src="BtnImg.jpg" alt="Coin">
+        <img id="coinIcon" src="BtnImg.jpg" alt="Coin"> <!-- Changed to BtnImg.jpg -->
         <span id="coinCount">0</span>
     </div>
     <button id="upgradeButton">Upgrade (10 coins)</button>
@@ -112,13 +112,11 @@
                         console.error('Ошибка воспроизведения звука:', e);
                     });
 
-                // Add coins based on current multiplier
                 count += coinsPerClick;
                 coinCount.textContent = count;
 
-                // Create flying coin
                 const coin = document.createElement('img');
-                coin.src = 'BtnImg.jpg';
+                coin.src = 'BtnImg.jpg'; // Changed to BtnImg.jpg
                 coin.className = 'flying-coin';
                 const rect = mainButton.getBoundingClientRect();
                 coin.style.left = (e.clientX - rect.left - 15) + 'px';
@@ -126,7 +124,6 @@
                 document.body.appendChild(coin);
                 setTimeout(() => coin.remove(), 1000);
 
-                // Update upgrade button state
                 upgradeButton.disabled = count < upgradeCost;
             });
 
@@ -136,8 +133,8 @@
                     coinsPerClick += 1;
                     upgradeLevel++;
                     
-                    // Update cost (increases by 10 each level)
-                    upgradeCost = 10 * upgradeLevel;
+                    // Increased cost progression (exponential: 10 * level^2)
+                    upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
                     upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
                     
                     coinCount.textContent = count;
@@ -145,7 +142,6 @@
                 }
             });
 
-            // Initial button state
             upgradeButton.disabled = true;
         });
     </script>
