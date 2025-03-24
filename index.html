@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кнопка для звука</title>
+    <title>SaundTag</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
             overflow: hidden;
-            background: linear-gradient(135deg, #1a1a1a, #000); /* Gradient background */
+            background: linear-gradient(135deg, #1a1a1a, #000);
             position: relative;
             font-family: 'Arial', sans-serif;
         }
@@ -25,7 +25,7 @@
             cursor: pointer;
             outline: none;
             -webkit-tap-highlight-color: transparent;
-            transition: filter 0.2s ease; /* Smooth transition for click effect */
+            transition: filter 0.2s ease;
         }
         button#mainButton:active {
             filter: brightness(85%) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
@@ -41,7 +41,7 @@
             background: rgba(0, 0, 0, 0.8);
             padding: 15px 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         #coinIcon {
@@ -83,8 +83,8 @@
             outline: none;
             -webkit-tap-highlight-color: transparent;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-            transition: all 0.3s ease; /* Smooth hover/click effects */
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); /* Text readability */
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
         }
         #upgradeButton:hover:not(:disabled) {
             transform: translateX(-50%) scale(1.05);
@@ -115,7 +115,7 @@
             const mainButton = document.getElementById('mainButton');
             const upgradeButton = document.getElementById('upgradeButton');
             const sound = document.getElementById('funSound');
-            const coin.elasticCount = document.getElementById('coinCount');
+            const coinCount = document.getElementById('coinCount'); // Fixed typo here
 
             // Load saved values from localStorage
             let count = parseInt(localStorage.getItem('coinCount')) || 0;
@@ -141,10 +141,10 @@
                 coin.src = 'BtnImg.jpg';
                 coin.className = 'flying-coin';
                 const rect = mainButton.getBoundingClientRect();
-                coin.style.left = (e.clientX - rect.left - 20) + 'px'; // Adjusted for larger size
+                coin.style.left = (e.clientX - rect.left - 20) + 'px';
                 coin.style.top = (e.clientY - rect.top - 20) + 'px';
                 document.body.appendChild(coin);
-                setTimeout(() => coin.remove(), 1200); // Match animation duration
+                setTimeout(() => coin.remove(), 1200);
 
                 upgradeButton.disabled = count < upgradeCost;
             });
