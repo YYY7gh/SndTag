@@ -5,8 +5,166 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ШколаКликер</title>
     <style>
-        /* Existing styles remain unchanged */
-        /* Add styles for admin panel */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #2c3e50, #1a1a1a);
+            position: relative;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #fff;
+        }
+        button#mainButton {
+            width: 100%;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: filter 0.3s ease;
+        }
+        button#mainButton:hover {
+            filter: brightness(110%) saturate(1.1);
+        }
+        button#mainButton:active {
+            filter: brightness(85%) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+        #counter {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(3px);
+        }
+        #coinIcon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        }
+        .flying-coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            animation: flyUp 1.2s ease-out forwards;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        }
+        @keyframes flyUp {
+            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+            50% { opacity: 0.8; transform: translateY(-60px) scale(1.1) rotate(10deg); }
+            100% { opacity: 0; transform: translateY(-120px) scale(0.7) rotate(20deg); }
+        }
+        #upgradeButton {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-size: cover;
+            background-position: center;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 180px;
+            height: 50px;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            background-blend-mode: overlay;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        #upgradeButton:hover:not(:disabled) {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+            filter: brightness(110%);
+        }
+        #upgradeButton:active {
+            filter: brightness(85%);
+            transform: translateX(-50%) scale(0.97);
+        }
+        #upgradeButton:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        #skinPanelToggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background: #2c3e50;
+            border-radius: 8px;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            transition: background 0.3s ease;
+        }
+        #skinPanelToggle:hover {
+            background: #34495e;
+        }
+        #skinPanel {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            width: 250px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            display: none;
+            z-index: 10;
+        }
+        .skin-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .skin-option:hover:not(.locked) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .skin-option.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .skin-option img {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        .skin-option span {
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        /* Admin Panel Styles */
         #adminPanel {
             position: absolute;
             top: 50%;
@@ -63,7 +221,6 @@
     <button id="upgradeButton">Upgrade (10 coins)</button>
     <button id="skinPanelToggle">Скины</button>
     <div id="skinPanel">
-        <!-- Existing skin options remain unchanged -->
         <div class="skin-option" data-skin="Skins/SvetlanaSkin.jpg" data-cost="0">
             <img src="Skins/SvetlanaSkin.jpg" alt="Skin 1">
             <span>🔢Svetlana (Free)</span>
@@ -145,7 +302,7 @@
                 }
             });
 
-            // Morse code detection
+            // Morse code detection for .-.
             let clickTimes = [];
             const morsePattern = [100, 300, 100, 300]; // .- (short, long, short, long) in ms
             counter.addEventListener('click', function(e) {
