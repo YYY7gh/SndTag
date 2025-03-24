@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кнопка для звука</title>
+    <title>LinganGuliGuliGuliWatchaLinganGoo</title>
     <style>
         body {
             margin: 0;
@@ -15,13 +15,16 @@
         button {
             width: 100%;
             height: 100vh;
-            background-color: #000; /* Чёрная кнопка */
+            background-image: url('BtnImg.jpg'); /* Добавляем изображение */
+            background-size: cover; /* Масштабируем изображение */
+            background-position: center; /* Центрируем изображение */
+            background-repeat: no-repeat; /* Без повтора */
             border: none;
             cursor: pointer;
             outline: none;
         }
         button:active {
-            background-color: #1a1a1a; /* Лёгкое затемнение при нажатии */
+            filter: brightness(85%); /* Лёгкое затемнение при нажатии вместо изменения цвета */
         }
     </style>
 </head>
