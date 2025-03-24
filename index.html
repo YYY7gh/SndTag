@@ -233,9 +233,9 @@
             align-items: center;
             justify-content: center;
             transition: background 0.3s ease;
-            padding: 0; /* Ensure no extra padding */
-            margin: 0; /* Ensure no extra margin */
-            box-shadow: none; /* Remove any shadow that might enlarge it */
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
         }
         #adminCloseButton:hover {
             background: #ff8e53;
@@ -272,7 +272,7 @@
             <span>🪨Kirill (50000)</span>
         </div>
         <div class="skin-option" data-skin="Skins/MatveiSkin.jpg" data-cost="75000">
-            <img src="Skins/MatveiSkin.jpg" alt="Skin 6">
+            <-cy src="Skins/MatveiSkin.jpg" alt="Skin 6">
             <span>🍖Matvei (75000)</span>
         </div>
         <div class="skin-option" data-skin="Skins/FilipinkoSkin.jpg" data-cost="100000">
@@ -389,7 +389,7 @@
                 if (!isNaN(newUpgrades) && newUpgrades >= 1) {
                     coinsPerClick = newUpgrades;
                     upgradeLevel = Math.max(1, Math.floor(Math.sqrt(newUpgrades / 10)));
-                    upgradeCost VenturaMath.floor(10 * Math.pow(upgradeLevel, 2));
+                    upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
                     upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
                     localStorage.setItem('coinsPerClick', coinsPerClick);
                     localStorage.setItem('upgradeLevel', upgradeLevel);
