@@ -33,7 +33,7 @@
         button#mainButton:active {
             filter: brightness(85%) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
         }
-        #counter {
+        #clickArea {
             position: absolute;
             top: 20px;
             left: 20px;
@@ -46,6 +46,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(3px);
+            cursor: pointer;
         }
         #coinIcon {
             width: 30px;
@@ -164,7 +165,6 @@
             font-weight: bold;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
-        /* Admin Panel Styles */
         #adminPanel {
             position: absolute;
             top: 50%;
@@ -190,7 +190,7 @@
             width: 100%;
             padding: 8px;
             margin: 5px 0 10px;
-            border-radius: 5px;
+            border-radius:不了 5px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
@@ -214,7 +214,7 @@
 </head>
 <body>
     <button id="mainButton"></button>
-    <div id="counter">
+    <div id="clickArea">
         <img id="coinIcon" alt="Coin">
         <span id="coinCount">0</span>
     </div>
@@ -266,7 +266,7 @@
             const sound = document.getElementById('funSound');
             const coinCount = document.getElementById('coinCount');
             const coinIcon = document.getElementById('coinIcon');
-            const counter = document.getElementById('counter');
+            const clickArea = document.getElementById('clickArea');
             const skinPanelToggle = document.getElementById('skinPanelToggle');
             const skinPanel = document.getElementById('skinPanel');
             const skinOptions = document.querySelectorAll('.skin-option');
@@ -302,35 +302,29 @@
                 }
             });
 
-            // Morse code detection for .-. (A D)
-            let clickTimes = [];
-            const shortClick = 1000; // 1 second for short
-            const longClick = 2000;  // 2 seconds for long
-            const tolerance = 500;   // ±500ms tolerance
-            counter.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent click from bubbling to main button
-                const now = Date.now();
-                clickTimes.push(now);
+            // Long press detection for admin panel (10 seconds)
+            let pressStartTime = null;
+            const holdDuration = 10000; // 10 seconds in milliseconds
 
-                if (clickTimes.length > 4) clickTimes.shift(); // Keep only last 4 clicks
+            clickArea.addEventListener('mousedown', function(e) {
+                e.stopPropagation(); // Prevent bubbling to main button
+                pressStartTime = Date.now();
+            });
 
-                if (clickTimes.length === 4) {
-                    const intervals = [
-                        clickTimes[1] - clickTimes[0], // Short (dot)
-                        clickTimes[2] - clickTimes[1], // Long (dash)
-                        clickTimes[3] - clickTimes[2]  // Short (dot)
-                    ];
-
-                    const isMorseAD =
-                        intervals[0] >= shortClick - tolerance && intervals[0] <= shortClick + tolerance && // Short
-                        intervals[1] >= longClick - tolerance && intervals[1] <= longClick + tolerance &&   // Long
-                        intervals[2] >= shortClick - tolerance && intervals[2] <= shortClick + tolerance;  // Short
-
-                    if (isMorseAD) {
+            clickArea.addEventListener('mouseup', function(e) {
+                e.stopPropagation();
+                if (pressStartTime) {
+                    const pressDuration = Date.now() - pressStartTime;
+                    if (pressDuration >= holdDuration) {
                         adminPanel.style.display = 'block';
-                        clickTimes = []; // Reset after successful activation
                     }
+                    pressStartTime = null; // Reset
                 }
+            });
+
+            // Handle case where mouse leaves the area
+            clickArea.addEventListener('mouseleave', function() {
+                pressStartTime = null; // Reset if mouse leaves
             });
 
             // Admin panel functionality
