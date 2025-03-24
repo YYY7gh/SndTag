@@ -82,8 +82,10 @@
             // Автоматический запуск звука при загрузке
             playSound();
 
-            // Если нужен клик для перезапуска
-            retryButton.addEventListener('click', playSound);
+            // Кнопка "Перезагрузить" теперь просто перезагружает страницу
+            retryButton.addEventListener('click', function() {
+                location.reload(); // Перезагрузка страницы без повторного запуска звука вручную
+            });
 
             muteButton.addEventListener('click', function() {
                 muteClicks++;
