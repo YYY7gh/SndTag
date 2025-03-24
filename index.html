@@ -302,9 +302,11 @@
                 }
             });
 
-            // Morse code detection for .-.
+            // Morse code detection for .-. (A D)
             let clickTimes = [];
-            const morsePattern = [100, 300, 100, 300]; // .- (short, long, short, long) in ms
+            const shortClick = 1000; // 1 second for short
+            const longClick = 2000;  // 2 seconds for long
+            const tolerance = 500;   // ±500ms tolerance
             counter.addEventListener('click', function(e) {
                 e.stopPropagation(); // Prevent click from bubbling to main button
                 const now = Date.now();
@@ -314,15 +316,16 @@
 
                 if (clickTimes.length === 4) {
                     const intervals = [
-                        clickTimes[1] - clickTimes[0],
-                        clickTimes[2] - clickTimes[1],
-                        clickTimes[3] - clickTimes[2]
+                        clickTimes[1] - clickTimes[0], // Short (dot)
+                        clickTimes[2] - clickTimes[1], // Long (dash)
+                        clickTimes[3] - clickTimes[2]  // Short (dot)
                     ];
-                    const isMorseAD = intervals.every((interval, i) => {
-                        const expected = morsePattern[i];
-                        const nextExpected = morsePattern[i + 1] || 0;
-                        return interval >= expected * 0.7 && (nextExpected === 0 || interval <= nextExpected * 1.3);
-                    });
+
+                    const isMorseAD =
+                        intervals[0] >= shortClick - tolerance && intervals[0] <= shortClick + tolerance && // Short
+                        intervals[1] >= longClick - tolerance && intervals[1] <= longClick + tolerance &&   // Long
+                        intervals[2] >= shortClick - tolerance && intervals[2] <= shortClick + tolerance;  // Short
+
                     if (isMorseAD) {
                         adminPanel.style.display = 'block';
                         clickTimes = []; // Reset after successful activation
