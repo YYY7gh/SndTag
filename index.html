@@ -14,6 +14,8 @@
             position: relative;
             font-family: 'Segoe UI', Arial, sans-serif;
             color: #fff;
+            -webkit-user-select: none; /* Prevent text selection on mobile */
+            user-select: none;
         }
         button#mainButton {
             width: 100%;
@@ -47,6 +49,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(3px);
             cursor: pointer;
+            touch-action: none; /* Prevent default touch behaviors */
         }
         #coinIcon {
             width: 30px;
@@ -190,7 +193,7 @@
             width: 100%;
             padding: 8px;
             margin: 5px 0 10px;
-            border-radius:不了 5px;
+            border-radius: 5px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
@@ -305,26 +308,46 @@
             // Long press detection for admin panel (10 seconds)
             let pressStartTime = null;
             const holdDuration = 10000; // 10 seconds in milliseconds
+            let holdTimeout = null;
 
+            // Mouse events for desktop
             clickArea.addEventListener('mousedown', function(e) {
-                e.stopPropagation(); // Prevent bubbling to main button
+                e.preventDefault(); // Prevent default behavior
                 pressStartTime = Date.now();
+                holdTimeout = setTimeout(() => {
+                    adminPanel.style.display = 'block';
+                }, holdDuration);
             });
 
             clickArea.addEventListener('mouseup', function(e) {
-                e.stopPropagation();
-                if (pressStartTime) {
-                    const pressDuration = Date.now() - pressStartTime;
-                    if (pressDuration >= holdDuration) {
-                        adminPanel.style.display = 'block';
-                    }
-                    pressStartTime = null; // Reset
-                }
+                e.preventDefault();
+                clearTimeout(holdTimeout);
+                pressStartTime = null;
             });
 
-            // Handle case where mouse leaves the area
             clickArea.addEventListener('mouseleave', function() {
-                pressStartTime = null; // Reset if mouse leaves
+                clearTimeout(holdTimeout);
+                pressStartTime = null;
+            });
+
+            // Touch events for mobile
+            clickArea.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // Prevent scrolling/zooming
+                pressStartTime = Date.now();
+                holdTimeout = setTimeout(() => {
+                    adminPanel.style.display = 'block';
+                }, holdDuration);
+            });
+
+            clickArea.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                clearTimeout(holdTimeout);
+                pressStartTime = null;
+            });
+
+            clickArea.addEventListener('touchcancel', function() {
+                clearTimeout(holdTimeout);
+                pressStartTime = null;
             });
 
             // Admin panel functionality
@@ -369,6 +392,30 @@
                 const rect = mainButton.getBoundingClientRect();
                 coin.style.left = (e.clientX - rect.left - 15) + 'px';
                 coin.style.top = (e.clientY - rect.top - 15) + 'px';
+                document.body.appendChild(coin);
+                setTimeout(() => coin.remove(), 1200);
+
+                upgradeButton.disabled = count < upgradeCost;
+                updateSkinOptions();
+            });
+
+            // Main button touch support
+            mainButton.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                sound.volume = 1.0;
+                sound.play().catch((e) => console.error('Ошибка воспроизведения звука:', e));
+
+                count += coinsPerClick;
+                coinCount.textContent = count;
+                localStorage.setItem('coinCount', count);
+
+                const touch = e.touches[0];
+                const coin = document.createElement('img');
+                coin.src = currentSkin;
+                coin.className = 'flying-coin';
+                const rect = mainButton.getBoundingClientRect();
+                coin.style.left = (touch.clientX - rect.left - 15) + 'px';
+                coin.style.top = (touch.clientY - rect.top - 15) + 'px';
                 document.body.appendChild(coin);
                 setTimeout(() => coin.remove(), 1200);
 
