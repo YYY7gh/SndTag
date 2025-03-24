@@ -10,14 +10,14 @@
             padding: 0;
             height: 100vh;
             overflow: hidden;
-            background: linear-gradient(135deg, #1a1a1a, #000);
+            background: linear-gradient(135deg, #2c3e50, #1a1a1a);
             position: relative;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #fff;
         }
         button#mainButton {
             width: 100%;
             height: 100vh;
-            background-image: url('BtnImg.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -25,89 +25,128 @@
             cursor: pointer;
             outline: none;
             -webkit-tap-highlight-color: transparent;
-            transition: filter 0.2s ease;
+            transition: filter 0.3s ease, transform 0.1s ease;
+        }
+        button#mainButton:hover {
+            filter: brightness(110%) saturate(1.1);
         }
         button#mainButton:active {
-            filter: brightness(85%) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+            filter: brightness(85%) drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+            transform: scale(0.99);
         }
         #counter {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            color: #fff;
-            font-size: 28px;
+            top: 30px;
+            left: 30px;
+            font-size: 32px;
             display: flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
         }
         #coinIcon {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+            width: 50px;
+            height: 50px;
+            margin-right: 20px;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
+            transition: transform 0.3s ease;
+        }
+        #coinIcon:hover {
+            transform: rotate(20deg);
         }
         .flying-coin {
             position: absolute;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             pointer-events: none;
-            animation: flyUp 1.2s ease-out forwards;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+            animation: flyUp 1.5s ease-out forwards;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
         }
         @keyframes flyUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            50% { transform: translateY(-60px) scale(1.1); }
-            100% { opacity: 0; transform: translateY(-120px) scale(0.8); }
+            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+            50% { opacity: 0.8; transform: translateY(-80px) scale(1.2) rotate(15deg); }
+            100% { opacity: 0; transform: translateY(-150px) scale(0.7) rotate(30deg); }
         }
         #upgradeButton {
             position: absolute;
-            bottom: 80px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 15px 30px;
-            background-image: url('BtnImg.jpg');
+            padding: 20px 40px;
             background-size: cover;
             background-position: center;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             color: #fff;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
-            width: 240px;
-            height: 70px;
+            width: 280px;
+            height: 80px;
             outline: none;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
             transition: all 0.3s ease;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9);
+            background-blend-mode: overlay;
+            background-color: rgba(0, 0, 0, 0.3);
         }
         #upgradeButton:hover:not(:disabled) {
             transform: translateX(-50%) scale(1.05);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            filter: brightness(110%);
         }
         #upgradeButton:active {
             filter: brightness(85%);
-            transform: translateX(-50%) scale(0.98);
+            transform: translateX(-50%) scale(0.97);
         }
         #upgradeButton:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             box-shadow: none;
+        }
+        #skinSelector {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        #skinSelect {
+            padding: 10px 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            background: #2c3e50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            width: 200px;
+            transition: background 0.3s ease;
+        }
+        #skinSelect:hover {
+            background: #34495e;
         }
     </style>
 </head>
 <body>
     <button id="mainButton"></button>
     <div id="counter">
-        <img id="coinIcon" src="BtnImg.jpg" alt="Coin">
+        <img id="coinIcon" alt="Coin">
         <span id="coinCount">0</span>
     </div>
     <button id="upgradeButton">Upgrade (10 coins)</button>
+    <div id="skinSelector">
+        <select id="skinSelect"></select>
+    </div>
     <audio id="funSound" src="ston.mp3" loop></audio>
 
     <script>
@@ -115,13 +154,36 @@
             const mainButton = document.getElementById('mainButton');
             const upgradeButton = document.getElementById('upgradeButton');
             const sound = document.getElementById('funSound');
-            const coinCount = document.getElementById('coinCount'); // Fixed typo here
+            const coinCount = document.getElementById('coinCount');
+            const skinSelect = document.getElementById('skinSelect');
+            const coinIcon = document.getElementById('coinIcon');
+
+            // Predefined array of skins (add more as needed)
+            const skins = [
+                'Skins/Skin1.jpg',
+                'Skins/Skin2.jpg'
+            ];
 
             // Load saved values from localStorage
             let count = parseInt(localStorage.getItem('coinCount')) || 0;
             let coinsPerClick = parseInt(localStorage.getItem('coinsPerClick')) || 1;
             let upgradeLevel = parseInt(localStorage.getItem('upgradeLevel')) || 1;
             let upgradeCost = Math.floor(10 * Math.pow(upgradeLevel, 2));
+            let currentSkin = localStorage.getItem('currentSkin') || skins[0];
+
+            // Populate skin selector dynamically
+            skins.forEach((skin, index) => {
+                const option = document.createElement('option');
+                option.value = skin;
+                option.textContent = `Skin ${index + 1}`;
+                skinSelect.appendChild(option);
+            });
+            skinSelect.value = currentSkin;
+
+            // Apply initial skin
+            mainButton.style.backgroundImage = `url('${currentSkin}')`;
+            upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
+            coinIcon.src = currentSkin;
 
             // Initialize display
             coinCount.textContent = count;
@@ -138,13 +200,13 @@
                 localStorage.setItem('coinCount', count);
 
                 const coin = document.createElement('img');
-                coin.src = 'BtnImg.jpg';
+                coin.src = currentSkin;
                 coin.className = 'flying-coin';
                 const rect = mainButton.getBoundingClientRect();
-                coin.style.left = (e.clientX - rect.left - 20) + 'px';
-                coin.style.top = (e.clientY - rect.top - 20) + 'px';
+                coin.style.left = (e.clientX - rect.left - 25) + 'px';
+                coin.style.top = (e.clientY - rect.top - 25) + 'px';
                 document.body.appendChild(coin);
-                setTimeout(() => coin.remove(), 1200);
+                setTimeout(() => coin.remove(), 1500);
 
                 upgradeButton.disabled = count < upgradeCost;
             });
@@ -165,6 +227,14 @@
                     localStorage.setItem('coinsPerClick', coinsPerClick);
                     localStorage.setItem('upgradeLevel', upgradeLevel);
                 }
+            });
+
+            skinSelect.addEventListener('change', function() {
+                currentSkin = skinSelect.value;
+                mainButton.style.backgroundImage = `url('${currentSkin}')`;
+                upgradeButton.style.backgroundImage = `url('${currentSkin}')`;
+                coinIcon.src = currentSkin;
+                localStorage.setItem('currentSkin', currentSkin);
             });
         });
     </script>
