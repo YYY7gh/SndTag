@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кнопка для звука</title>
+    <title>SndTag</title>
     <style>
         body {
             margin: 0;
@@ -23,6 +23,7 @@
             border: none;
             cursor: pointer;
             outline: none;
+            -webkit-tap-highlight-color: transparent; /* Fix for blue highlight */
         }
         button#mainButton:active {
             filter: brightness(85%);
@@ -56,6 +57,32 @@
             0% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-100px); }
         }
+        #upgradeButton {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-image: url('BtnImg.jpg'); /* New image for upgrade button */
+            background-size: cover;
+            background-position: center;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 200px;
+            height: 60px;
+            outline: none;
+            -webkit-tap-highlight-color: transparent; /* Fix for blue highlight */
+        }
+        #upgradeButton:active {
+            filter: brightness(85%);
+        }
+        #upgradeButton:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -64,44 +91,62 @@
         <img id="coinIcon" src="BtnImg.jpg" alt="Coin">
         <span id="coinCount">0</span>
     </div>
+    <button id="upgradeButton">Upgrade (10 coins)</button>
     <audio id="funSound" src="ston.mp3" loop></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mainButton = document.getElementById('mainButton');
+            const upgradeButton = document.getElementById('upgradeButton');
             const sound = document.getElementById('funSound');
             const coinCount = document.getElementById('coinCount');
             let count = 0;
+            let coinsPerClick = 1;
+            let upgradeCost = 10;
+            let upgradeLevel = 1;
 
             mainButton.addEventListener('click', function(e) {
-                // Play sound
                 sound.volume = 1.0;
                 sound.play()
                     .catch((e) => {
                         console.error('Ошибка воспроизведения звука:', e);
                     });
 
-                // Update counter
-                count++;
+                // Add coins based on current multiplier
+                count += coinsPerClick;
                 coinCount.textContent = count;
 
                 // Create flying coin
                 const coin = document.createElement('img');
                 coin.src = 'BtnImg.jpg';
                 coin.className = 'flying-coin';
-                
-                // Position coin at click location
                 const rect = mainButton.getBoundingClientRect();
-                coin.style.left = (e.clientX - rect.left - 15) + 'px'; // -15 to center the 30px image
+                coin.style.left = (e.clientX - rect.left - 15) + 'px';
                 coin.style.top = (e.clientY - rect.top - 15) + 'px';
-                
                 document.body.appendChild(coin);
-                
-                // Remove coin after animation
-                setTimeout(() => {
-                    coin.remove();
-                }, 1000);
+                setTimeout(() => coin.remove(), 1000);
+
+                // Update upgrade button state
+                upgradeButton.disabled = count < upgradeCost;
             });
+
+            upgradeButton.addEventListener('click', function() {
+                if (count >= upgradeCost) {
+                    count -= upgradeCost;
+                    coinsPerClick += 1;
+                    upgradeLevel++;
+                    
+                    // Update cost (increases by 10 each level)
+                    upgradeCost = 10 * upgradeLevel;
+                    upgradeButton.textContent = `Upgrade (${upgradeCost} coins)`;
+                    
+                    coinCount.textContent = count;
+                    upgradeButton.disabled = count < upgradeCost;
+                }
+            });
+
+            // Initial button state
+            upgradeButton.disabled = true;
         });
     </script>
 </body>
