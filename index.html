@@ -3,47 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinganGuliGuliGuliWatchaLinganGoo</title>
+    <title>Кнопка для звука</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
             overflow: hidden;
-            background-color: #000; /* Чёрный фон */
+            background-color: #000;
+            position: relative;
         }
-        button {
+        button#mainButton {
             width: 100%;
             height: 100vh;
-            background-image: url('BtnImg.jpg'); /* Добавляем изображение */
-            background-size: cover; /* Масштабируем изображение */
-            background-position: center; /* Центрируем изображение */
-            background-repeat: no-repeat; /* Без повтора */
+            background-image: url('BtnImg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             border: none;
             cursor: pointer;
             outline: none;
         }
-        button:active {
-            filter: brightness(85%); /* Лёгкое затемнение при нажатии вместо изменения цвета */
+        button#mainButton:active {
+            filter: brightness(85%);
+        }
+        #counter {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #coinIcon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+        .flying-coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            animation: flyUp 1s ease-out forwards;
+        }
+        @keyframes flyUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
         }
     </style>
 </head>
 <body>
-    <button id="playButton"></button>
-
+    <button id="mainButton"></button>
+    <div id="counter">
+        <img id="coinIcon" src="imgbtn.jpg" alt="Coin">
+        <span id="coinCount">0</span>
+    </div>
     <audio id="funSound" src="ston.mp3" loop></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const playButton = document.getElementById('playButton');
+            const mainButton = document.getElementById('mainButton');
             const sound = document.getElementById('funSound');
+            const coinCount = document.getElementById('coinCount');
+            let count = 0;
 
-            playButton.addEventListener('click', function() {
+            mainButton.addEventListener('click', function(e) {
+                // Play sound
                 sound.volume = 1.0;
                 sound.play()
-                .catch((e) => {
-                    console.error('Ошибка воспроизведения звука:', e);
-                });
+                    .catch((e) => {
+                        console.error('Ошибка воспроизведения звука:', e);
+                    });
+
+                // Update counter
+                count++;
+                coinCount.textContent = count;
+
+                // Create flying coin
+                const coin = document.createElement('img');
+                coin.src = 'imgbtn.jpg';
+                coin.className = 'flying-coin';
+                
+                // Position coin at click location
+                const rect = mainButton.getBoundingClientRect();
+                coin.style.left = (e.clientX - rect.left - 15) + 'px'; // -15 to center the 30px image
+                coin.style.top = (e.clientY - rect.top - 15) + 'px';
+                
+                document.body.appendChild(coin);
+                
+                // Remove coin after animation
+                setTimeout(() => {
+                    coin.remove();
+                }, 1000);
             });
         });
     </script>
